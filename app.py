@@ -1,46 +1,63 @@
 import streamlit as st
-import pandas as pd
+import numpy as np
+from sklearn import datasets
+from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
-import chardet
+from sklearn.decomposition import PCA
 
-# 应用标题
-st.title("交互式数据分析与可视化")
+# Title
+st.title("Interactive KMeans Clustering with Iris Dataset")
 
-# 文件上传
-uploaded_file = st.file_uploader("上传一个 CSV 文件进行分析", type=["csv"])
+# Sidebar for user input
+st.sidebar.title("Clustering Parameters")
+optimal_k = st.sidebar.slider("Select the number of clusters (K)", 1, 10, 3)
 
-if uploaded_file:
-    # 检测文件编码
-    raw_data = uploaded_file.read()
-    result = chardet.detect(raw_data)
-    encoding = result['encoding']
+# Train KMeans model and display elbow plot
+def train_model():
+    st.write("### Elbow Method: Optimal Number of Clusters")
+    iris = datasets.load_iris()
+    data = iris.data
+    np.random.seed(42)
 
-    # 重置文件指针并读取数据
-    uploaded_file.seek(0)
-    try:
-        data = pd.read_csv(uploaded_file, encoding=encoding)
-        st.write("### 数据预览")
-        st.dataframe(data)
+    # Define range for K values
+    K_range = range(1, 11)
+    ssd = []
 
-        # 数据筛选
-        st.write("### 数据筛选")
-        columns = list(data.columns)
-        selected_column = st.selectbox("选择需要分析的列", columns)
+    # Fit KMeans for each K
+    for K in K_range:
+        kmeans = KMeans(n_clusters=K, random_state=42)
+        kmeans.fit(data)
+        ssd.append(kmeans.inertia_)
 
-        if pd.api.types.is_numeric_dtype(data[selected_column]):
-            st.write("### 描述性统计")
-            st.write(data[selected_column].describe())
+    # Plot elbow method
+    fig, ax = plt.subplots()
+    ax.plot(K_range, ssd, 'bo-', markersize=5)
+    ax.set_xlabel("Number of Clusters (K)")
+    ax.set_ylabel("Sum of Squared Distances (SSD)")
+    ax.set_title("Elbow Plot")
+    st.pyplot(fig)
 
-            st.write("### 数据分布")
-            fig, ax = plt.subplots()
-            ax.hist(data[selected_column], bins=20, alpha=0.7)
-            ax.set_title(f"{selected_column} 的直方图")
-            ax.set_xlabel(selected_column)
-            ax.set_ylabel("频数")
-            st.pyplot(fig)
-        else:
-            st.write("选择的列不是数值型数据，无法生成图表。")
-    except UnicodeDecodeError:
-        st.error("文件编码错误，请保存为 UTF-8 格式后重新上传。")
-else:
-    st.write("请上传一个 CSV 文件。")
+    # Train model with user-selected K
+    kmeans_optimal = KMeans(n_clusters=optimal_k, random_state=42)
+    kmeans_optimal.fit(data)
+    return kmeans_optimal, data
+
+# Train the model
+kmeans_model, iris_data = train_model()
+
+# Visualize clustering
+st.write(f"### Clustering Results with K={optimal_k}")
+pca = PCA(n_components=2)
+reduced_data = pca.fit_transform(iris_data)
+labels = kmeans_model.labels_
+
+fig, ax = plt.subplots()
+scatter = ax.scatter(reduced_data[:, 0], reduced_data[:, 1], c=labels, cmap="viridis", s=50)
+ax.set_title("Iris Data Clustering")
+ax.set_xlabel("PCA Component 1")
+ax.set_ylabel("PCA Component 2")
+st.pyplot(fig)
+
+# Display cluster centers
+st.write("### Cluster Centers")
+st.dataframe(kmeans_model.cluster_centers_)
