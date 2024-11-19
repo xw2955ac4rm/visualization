@@ -4,6 +4,7 @@ import pandas as pd
 from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
+import chardet
 
 # App Title
 st.title("Interactive KMeans Clustering with Custom Dataset")
@@ -17,8 +18,14 @@ uploaded_file = st.sidebar.file_uploader("Upload a CSV file for clustering", typ
 
 if uploaded_file:
     try:
-        # Read the uploaded file
-        data = pd.read_csv(uploaded_file)
+        # Detect file encoding
+        raw_data = uploaded_file.read()
+        result = chardet.detect(raw_data)
+        encoding = result['encoding']
+
+        # Reset file pointer and read with detected encoding
+        uploaded_file.seek(0)
+        data = pd.read_csv(uploaded_file, encoding=encoding)
 
         # Validate if all columns are numeric
         if not all(data.dtypes.apply(lambda x: np.issubdtype(x, np.number))):
@@ -75,6 +82,8 @@ if uploaded_file:
             # Display Cluster Centers
             st.write("### Cluster Centers")
             st.dataframe(pd.DataFrame(kmeans_model.cluster_centers_, columns=data.columns))
+    except UnicodeDecodeError:
+        st.error("Please save the file as UTF-8 and try again.")
     except Exception as e:
         st.error(f"An error occurred while processing your data: {e}")
 else:
