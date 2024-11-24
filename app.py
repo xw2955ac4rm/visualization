@@ -28,10 +28,28 @@ with tabs[0]:
 with tabs[1]:
     st.title("Try KMeans with Demo Data (Iris Dataset)")
 
-    def train_with_demo_data():
+    def download_demo_data():
         iris = datasets.load_iris()
-        data = iris.data
-        target = iris.target
+        data = pd.DataFrame(iris.data, columns=iris.feature_names)
+        data['target'] = iris.target
+
+        # Provide a download link for the dataset
+        st.write("### Download Demo Data (Iris Dataset)")
+        csv = data.to_csv(index=False)
+        st.download_button(
+            label="Download Iris Dataset as CSV",
+            data=csv,
+            file_name='iris_demo_data.csv',
+            mime='text/csv',
+        )
+
+        return data
+
+    # Provide download option
+    demo_data = download_demo_data()
+
+    # Display clustering demo with Iris dataset
+    def train_with_demo_data(data):
         np.random.seed(42)
 
         # Define the range for K values
@@ -71,7 +89,7 @@ with tabs[1]:
         ax.set_ylabel("Principal Component 2")
         st.pyplot(fig)
 
-    train_with_demo_data()
+    train_with_demo_data(demo_data.iloc[:, :-1])
 
 # Tab 3: Try with Your Data
 with tabs[2]:
