@@ -1,13 +1,14 @@
-import streamlit as st
 import numpy as np
 import pandas as pd
-from sklearn.cluster import KMeans
 import matplotlib.pyplot as plt
+import streamlit as st
+from sklearn import datasets
+from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 import chardet
 
 # Tabs for the app
-tabs = st.tabs(["Learn About KMeans", "KMeans Clustering"])
+tabs = st.tabs(["Learn About KMeans", "Try Demo Data", "Try with Your Data"])
 
 # Tab 1: Learn About KMeans
 with tabs[0]:
@@ -16,8 +17,6 @@ with tabs[0]:
     KMeans clustering is an unsupervised machine learning algorithm that groups data into a pre-defined number of clusters (K). 
     It works by minimizing the within-cluster variance and is widely used for data segmentation and pattern recognition tasks.
     """)
-
-    # Add external learning resource links
     st.markdown("""
     ### Resources to Learn More
     - [Scikit-Learn KMeans Documentation](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
@@ -25,18 +24,61 @@ with tabs[0]:
     - [KMeans Algorithm on Wikipedia](https://en.wikipedia.org/wiki/K-means_clustering)
     """)
 
-    # Add a button to visit an external website
-    if st.button("Visit External Learning Platform"):
-        st.markdown("[Click here to explore more about KMeans](https://www.analyticsvidhya.com/blog/2019/08/comprehensive-guide-k-means-clustering/)", unsafe_allow_html=True)
-
-# Tab 2: Clustering
+# Tab 2: Try Demo Data
 with tabs[1]:
-    st.title("Interactive KMeans Clustering with Custom Dataset")
-    
-    # Parameters and file uploader moved to this tab
-    st.write("### Step 1: Select Clustering Parameters")
-    optimal_k = st.slider("Select the number of clusters (K)", 1, 10, 3)
-    uploaded_file = st.file_uploader("Upload a CSV file for clustering", type=["csv"])
+    st.title("Try KMeans with Demo Data (Iris Dataset)")
+
+    def train_with_demo_data():
+        iris = datasets.load_iris()
+        data = iris.data
+        target = iris.target
+        np.random.seed(42)
+
+        # Define the range for K values
+        K_range = range(1, 11)
+        ssd = []
+
+        # Fit KMeans for each K
+        for K in K_range:
+            kmeans = KMeans(n_clusters=K, random_state=42)
+            kmeans.fit(data)
+            ssd.append(kmeans.inertia_)
+
+        # Elbow Plot
+        st.write("### Elbow Method to Determine Optimal K")
+        fig, ax = plt.subplots()
+        ax.plot(K_range, ssd, 'bo-', markersize=5)
+        ax.set_xlabel("Number of Clusters (K)")
+        ax.set_ylabel("Sum of Squared Distances (SSD)")
+        ax.set_title("Elbow Method")
+        st.pyplot(fig)
+
+        # Train KMeans with the optimal K
+        optimal_K = 3
+        kmeans_optimal = KMeans(n_clusters=optimal_K, random_state=42)
+        kmeans_optimal.fit(data)
+
+        # Visualize Clusters
+        st.write("### Cluster Visualization")
+        pca = PCA(n_components=2)
+        reduced_data = pca.fit_transform(data)
+        labels = kmeans_optimal.labels_
+
+        fig, ax = plt.subplots()
+        scatter = ax.scatter(reduced_data[:, 0], reduced_data[:, 1], c=labels, cmap="viridis", s=50)
+        ax.set_title("Clusters Visualized (Iris Data)")
+        ax.set_xlabel("Principal Component 1")
+        ax.set_ylabel("Principal Component 2")
+        st.pyplot(fig)
+
+    train_with_demo_data()
+
+# Tab 3: Try with Your Data
+with tabs[2]:
+    st.title("Try KMeans with Your Own Data")
+
+    # File Upload
+    uploaded_file = st.file_uploader("Upload a CSV file with numeric data", type=["csv"])
 
     if uploaded_file:
         try:
@@ -58,21 +100,21 @@ with tabs[1]:
                 st.dataframe(data.head())
 
                 # Train the KMeans model and visualize results
-                def train_model(data):
-                    st.write("### Elbow Method: Determine the Optimal Number of Clusters")
+                def train_with_uploaded_data(data):
+                    st.write("### Elbow Method to Determine Optimal K")
                     np.random.seed(42)
 
-                    # Define the range of K values
+                    # Define the range for K values
                     K_range = range(1, 11)
                     ssd = []
 
-                    # Compute Sum of Squared Distances (SSD) for each K
+                    # Fit KMeans for each K
                     for K in K_range:
                         kmeans = KMeans(n_clusters=K, random_state=42)
                         kmeans.fit(data)
                         ssd.append(kmeans.inertia_)
 
-                    # Plot the Elbow Curve
+                    # Elbow Plot
                     fig, ax = plt.subplots()
                     ax.plot(K_range, ssd, 'bo-', markersize=5)
                     ax.set_xlabel("Number of Clusters (K)")
@@ -80,34 +122,32 @@ with tabs[1]:
                     ax.set_title("Elbow Method")
                     st.pyplot(fig)
 
-                    # Train KMeans with the selected K
-                    kmeans_optimal = KMeans(n_clusters=optimal_k, random_state=42)
+                    # Train KMeans with the optimal K
+                    optimal_K = st.slider("Select the number of clusters (K)", 1, 10, 3)
+                    kmeans_optimal = KMeans(n_clusters=optimal_K, random_state=42)
                     kmeans_optimal.fit(data)
-                    return kmeans_optimal, data
 
-                # Train the KMeans model
-                kmeans_model, cluster_data = train_model(data)
+                    # Visualize Clusters
+                    st.write("### Cluster Visualization")
+                    pca = PCA(n_components=2)
+                    reduced_data = pca.fit_transform(data)
+                    labels = kmeans_optimal.labels_
 
-                # Visualize the clustering results
-                st.write(f"### Clustering Results for K={optimal_k}")
-                pca = PCA(n_components=2)
-                reduced_data = pca.fit_transform(cluster_data)
-                labels = kmeans_model.labels_
+                    fig, ax = plt.subplots()
+                    scatter = ax.scatter(reduced_data[:, 0], reduced_data[:, 1], c=labels, cmap="viridis", s=50)
+                    ax.set_title("Clusters Visualized (Uploaded Data)")
+                    ax.set_xlabel("Principal Component 1")
+                    ax.set_ylabel("Principal Component 2")
+                    st.pyplot(fig)
 
-                fig, ax = plt.subplots()
-                scatter = ax.scatter(reduced_data[:, 0], reduced_data[:, 1], c=labels, cmap="viridis", s=50)
-                ax.set_title("Cluster Visualization")
-                ax.set_xlabel("Principal Component 1")
-                ax.set_ylabel("Principal Component 2")
-                st.pyplot(fig)
+                    # Display Cluster Centers
+                    st.write("### Cluster Centers")
+                    st.dataframe(pd.DataFrame(kmeans_optimal.cluster_centers_, columns=data.columns))
 
-                # Display Cluster Centers
-                st.write("### Cluster Centers")
-                st.dataframe(pd.DataFrame(kmeans_model.cluster_centers_, columns=data.columns))
+                train_with_uploaded_data(data)
         except UnicodeDecodeError:
             st.error("Please save the file as UTF-8 and try again.")
         except Exception as e:
             st.error(f"An error occurred while processing your data: {e}")
     else:
-        st.write("Please upload a CSV file to perform clustering.")
-        st.write("The dataset should consist of numeric features only, with rows representing samples and columns representing features.")
+        st.write("Upload your CSV file to get started.")
