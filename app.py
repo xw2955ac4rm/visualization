@@ -118,3 +118,7 @@ with tabs[1]:
 if tabs[1]:
     st.sidebar.title("About")
     st.sidebar.info("This is an interactive app for performing KMeans clustering on custom datasets.")
+
+# Sidebar content hidden in the "Learn About KMeans" tab
+if tabs[0]:
+    st.sidebar.empty()
