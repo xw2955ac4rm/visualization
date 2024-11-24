@@ -6,6 +6,33 @@ import matplotlib.pyplot as plt
 from sklearn.decomposition import PCA
 import chardet
 
+# Tabs for the app
+tabs = st.tabs(["Learn About KMeans", "KMeans Clustering"])
+
+# Tab 1: Learn About KMeans
+with tabs[0]:
+    st.title("Learn About KMeans Clustering")
+    st.write("""
+    KMeans clustering is an unsupervised machine learning algorithm that groups data into a pre-defined number of clusters (K). 
+    It works by minimizing the within-cluster variance and is widely used for data segmentation and pattern recognition tasks.
+    """)
+    
+    # Add external learning resource links
+    st.markdown("""
+    ### Resources to Learn More
+    - [Scikit-Learn KMeans Documentation](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
+    - [Comprehensive Guide on KMeans Clustering](https://www.geeksforgeeks.org/k-means-clustering-introduction/)
+    - [KMeans Algorithm on Wikipedia](https://en.wikipedia.org/wiki/K-means_clustering)
+    """)
+    
+    # Add a button to visit an external website
+    if st.button("Visit External Learning Platform"):
+        st.markdown("[Click here to explore more about KMeans](https://www.analyticsvidhya.com/blog/2019/08/comprehensive-guide-k-means-clustering/)", unsafe_allow_html=True)
+
+# Tab 2: Clustering
+with tabs[1]:
+    st.title("Interactive KMeans Clustering with Custom Dataset")
+
 # App Title
 st.title("Interactive KMeans Clustering with Custom Dataset")
 
