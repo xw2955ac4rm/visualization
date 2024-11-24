@@ -38,12 +38,17 @@ with tabs[0]:
     2. **Assignment**: Assign each data point to the nearest cluster center.
     3. **Update**: Recalculate the cluster centers as the mean of the assigned points.
     4. Repeat Steps 2 and 3 until convergence (when cluster centers no longer move significantly).
+    """)
 
-    The goal of KMeans is to minimize the following objective function:
-    \[
+    # Render the objective function in LaTeX
+    st.write("The goal of KMeans is to minimize the following objective function:")
+    st.latex(r"""
     J = \sum_{i=1}^{K} \sum_{x \in C_i} ||x - \mu_i||^2
-    \]
-    where \( C_i \) represents the set of points in cluster \( i \), and \( \mu_i \) is the center of cluster \( i \).
+    """)
+    st.write("""
+    Where:
+    - \( C_i \) represents the set of points in cluster \( i \).
+    - \( \mu_i \) is the center of cluster \( i \).
     """)
 
     # Interactive KMeans explanation
@@ -78,6 +83,7 @@ with tabs[0]:
     - Go to the **Try Demo Data** tab to explore clustering using the Iris dataset.
     - Head over to the **Try with Your Data** tab to upload your own dataset and perform clustering.
     """)
+
 # Tab 2: Try Demo Data
 with tabs[1]:
     st.title("Try KMeans with Demo Data (Iris Dataset)")
