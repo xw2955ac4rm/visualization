@@ -12,18 +12,72 @@ tabs = st.tabs(["Learn About KMeans", "Try Demo Data", "Try with Your Data"])
 
 # Tab 1: Learn About KMeans
 with tabs[0]:
+    # Title
     st.title("Learn About KMeans Clustering")
+
+    # Introduction Section
     st.write("""
-    KMeans clustering is an unsupervised machine learning algorithm that groups data into a pre-defined number of clusters (K). 
-    It works by minimizing the within-cluster variance and is widely used for data segmentation and pattern recognition tasks.
+    KMeans clustering is an unsupervised machine learning algorithm that groups data into a predefined number of clusters (K). 
+    It works by minimizing the variance within clusters and is widely used for tasks like data segmentation, pattern recognition, and exploratory data analysis.
     """)
+
+    # Website functionality overview
+    st.write("### What Can You Do on This Website?")
+    st.write("""
+    This website is designed to help you understand and interact with KMeans clustering. Here's what you can do:
+    - Learn the basics of KMeans clustering in this tab.
+    - Experiment with KMeans on a demo dataset (Iris dataset) in the **Try Demo Data** tab.
+    - Upload your own dataset and perform KMeans clustering interactively in the **Try with Your Data** tab.
+    """)
+
+    # Explanation of the Algorithm
+    st.write("### How Does KMeans Work?")
     st.markdown("""
-    ### Resources to Learn More
+    The KMeans algorithm follows these steps:
+    1. **Initialization**: Randomly initialize \( K \) cluster centers.
+    2. **Assignment**: Assign each data point to the nearest cluster center.
+    3. **Update**: Recalculate the cluster centers as the mean of the assigned points.
+    4. Repeat Steps 2 and 3 until convergence (when cluster centers no longer move significantly).
+
+    The goal of KMeans is to minimize the following objective function:
+    \[
+    J = \sum_{i=1}^{K} \sum_{x \in C_i} ||x - \mu_i||^2
+    \]
+    where \( C_i \) represents the set of points in cluster \( i \), and \( \mu_i \) is the center of cluster \( i \).
+    """)
+
+    # Interactive KMeans explanation
+    st.write("### Interactive Explanation of KMeans")
+    st.write("Want to see KMeans in action? Check out this interactive step-by-step visualization:")
+    st.markdown("[KMeans Clustering Visualization](https://www.naftaliharris.com/blog/visualizing-k-means-clustering/)")
+
+    # Add an example image or GIF for explanation
+    st.write("### Visualizing the Algorithm")
+    st.image(
+        "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/K-means_convergence.gif/220px-K-means_convergence.gif",
+        caption="Visualization of KMeans Clustering Process",
+        use_column_width=True
+    )
+
+    # Additional resources for learning
+    st.write("### Additional Learning Resources")
+    st.markdown("""
     - [Scikit-Learn KMeans Documentation](https://scikit-learn.org/stable/modules/generated/sklearn.cluster.KMeans.html)
     - [Comprehensive Guide on KMeans Clustering](https://www.geeksforgeeks.org/k-means-clustering-introduction/)
     - [KMeans Algorithm on Wikipedia](https://en.wikipedia.org/wiki/K-means_clustering)
+    - [KMeans Practical Example](https://towardsdatascience.com/k-means-clustering-algorithm-applications-evaluation-methods-and-drawbacks-aa03e644b48a)
     """)
 
+    # Divider for better visual organization
+    st.markdown("---")
+
+    # Summarizing and guiding users to the next steps
+    st.write("### Get Started")
+    st.write("""
+    Ready to dive in? 
+    - Go to the **Try Demo Data** tab to explore clustering using the Iris dataset.
+    - Head over to the **Try with Your Data** tab to upload your own dataset and perform clustering.
+    """)
 # Tab 2: Try Demo Data
 with tabs[1]:
     st.title("Try KMeans with Demo Data (Iris Dataset)")
