@@ -45,10 +45,12 @@ with tabs[0]:
     st.latex(r"""
     J = \sum_{i=1}^{K} \sum_{x \in C_i} ||x - \mu_i||^2
     """)
-    st.write("""
-    Where:
-    - \( C_i \) represents the set of points in cluster \( i \).
-    - \( \mu_i \) is the center of cluster \( i \).
+    st.write("Where:")
+    st.latex(r"""
+    C_i: \text{ The set of points in cluster } i.
+    """)
+    st.latex(r"""
+    \mu_i: \text{ The center of cluster } i.
     """)
 
     # Interactive KMeans explanation
