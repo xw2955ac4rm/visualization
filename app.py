@@ -15,13 +15,13 @@ with tabs[0]:
     # Title
     st.title("Learn About KMeans Clustering")
 
-    # Introduction Section
+    # Introduction
     st.write("""
     KMeans clustering is an unsupervised machine learning algorithm that groups data into a predefined number of clusters (K). 
     It works by minimizing the variance within clusters and is widely used for tasks like data segmentation, pattern recognition, and exploratory data analysis.
     """)
 
-    # Website functionality overview
+    # Website function overview
     st.write("### What Can You Do on This Website?")
     st.write("""
     This website is designed to help you understand and interact with KMeans clustering. Here's what you can do:
@@ -30,7 +30,7 @@ with tabs[0]:
     - Upload your own dataset and perform KMeans clustering interactively in the **Try with Your Data** tab.
     """)
 
-    # Explanation of the Algorithm
+    # Explanation of Kmeans
     st.write("### How Does KMeans Work?")
     st.markdown("""
     The KMeans algorithm follows these steps:
@@ -58,7 +58,7 @@ with tabs[0]:
     st.write("Want to see KMeans in action? Check out this interactive step-by-step visualization:")
     st.markdown("[KMeans Clustering Visualization](https://www.naftaliharris.com/blog/visualizing-k-means-clustering/)")
 
-    # Add an example image or GIF for explanation
+    # An example image
     st.write("### Visualizing the Algorithm")
     st.image(
         "https://upload.wikimedia.org/wikipedia/commons/thumb/e/ea/K-means_convergence.gif/220px-K-means_convergence.gif",
@@ -74,8 +74,7 @@ with tabs[0]:
     - [KMeans Algorithm on Wikipedia](https://en.wikipedia.org/wiki/K-means_clustering)
     - [KMeans Practical Example](https://towardsdatascience.com/k-means-clustering-algorithm-applications-evaluation-methods-and-drawbacks-aa03e644b48a)
     """)
-
-    # Divider for better visual organization
+    
     st.markdown("---")
 
     # Summarizing and guiding users to the next steps
